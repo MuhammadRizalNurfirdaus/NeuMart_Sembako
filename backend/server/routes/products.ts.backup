@@ -1,0 +1,71 @@
+import express, { Request, Response } from 'express'
+import { products } from '../../data/products'
+
+const router = express.Router()
+
+// GET all products
+router.get('/', (req: Request, res: Response) => {
+  try {
+    res.json({
+      success: true,
+      data: products,
+      total: products.length
+    })
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching products',
+      error
+    })
+  }
+})
+
+// GET product by ID
+router.get('/:id', (req: Request, res: Response) => {
+  try {
+    const id = parseInt(req.params.id)
+    const product = products.find(p => p.id === id)
+    
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: 'Product not found'
+      })
+    }
+    
+    res.json({
+      success: true,
+      data: product
+    })
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching product',
+      error
+    })
+  }
+})
+
+// GET products by category
+router.get('/category/:category', (req: Request, res: Response) => {
+  try {
+    const category = req.params.category
+    const filteredProducts = products.filter(p => 
+      p.category.toLowerCase() === category.toLowerCase()
+    )
+    
+    res.json({
+      success: true,
+      data: filteredProducts,
+      total: filteredProducts.length
+    })
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching products by category',
+      error
+    })
+  }
+})
+
+export default router

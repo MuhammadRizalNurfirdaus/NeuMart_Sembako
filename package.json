@@ -1,0 +1,22 @@
+{
+  "name": "neumart-sembako-monorepo",
+  "version": "1.0.0",
+  "description": "NeuMart Sembako - Full-stack monorepo",
+  "private": true,
+  "scripts": {
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:all": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install",
+    "build:frontend": "cd frontend && npm run build",
+    "build:backend": "cd backend && npm run build",
+    "build:all": "npm run build:frontend && npm run build:backend"
+  },
+  "dependencies": {
+    "firebase": "^12.7.0",
+    "openai": "^6.15.0"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
