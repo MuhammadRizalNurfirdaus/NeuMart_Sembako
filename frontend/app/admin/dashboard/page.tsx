@@ -79,7 +79,7 @@ export default function AdminDashboard() {
 
   const fetchStats = async () => {
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api'
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003/api'
       const response = await axios.get(`${apiUrl}/admin/stats`)
       setStats(response.data.stats)
     } catch (error) {

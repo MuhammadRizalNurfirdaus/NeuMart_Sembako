@@ -70,7 +70,7 @@ export default function CheckoutPage() {
         createdAt: new Date().toISOString()
       }
 
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api'
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003/api'
       const response = await axios.post(`${apiUrl}/orders/create`, orderData)
 
       if (response.data.success) {

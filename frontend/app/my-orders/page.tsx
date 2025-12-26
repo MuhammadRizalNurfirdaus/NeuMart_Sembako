@@ -45,7 +45,7 @@ export default function MyOrdersPage() {
 
   const fetchOrders = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/orders')
+      const response = await fetch('http://localhost:3003/api/orders')
       const data = await response.json()
 
       if (data.success) {
@@ -68,7 +68,7 @@ export default function MyOrdersPage() {
     if (selectedItem) {
       // Mark item as reviewed
       await fetch(
-        `http://localhost:3001/api/orders/${selectedItem.orderId}/item/${selectedItem.productId}/review`,
+        `http://localhost:3003/api/orders/${selectedItem.orderId}/item/${selectedItem.productId}/review`,
         { method: 'POST' }
       )
       

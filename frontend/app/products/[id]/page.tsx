@@ -1,22 +1,67 @@
 'use client'
 
 import { useParams } from 'next/navigation'
-import { products } from '@/data/products'
+import { useEffect, useState } from 'react'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import ProductCard from '@/components/ProductCard'
 import ReviewList from '@/components/ReviewList'
 import { useCartStore } from '@/store/cartStore'
 import { Star, ShoppingCart, Package } from 'lucide-react'
-import { useState } from 'react'
+import { productsAPI } from '@/lib/api'
+
+interface Product {
+  id: number
+  name: string
+  category: string
+  price: number
+  stock: number
+  unit?: string
+  image?: string
+  description?: string
+  averageRating?: number
+  reviewCount?: number
+  relatedProducts?: number[]
+}
 
 export default function ProductDetailPage() {
   const params = useParams()
   const productId = parseInt(params.id as string)
-  const product = products.find(p => p.id === productId)
+  const [product, setProduct] = useState<Product | null>(null)
+  const [relatedProducts, setRelatedProducts] = useState<Product[]>([])
+  const [loading, setLoading] = useState(true)
   const { addItem } = useCartStore()
   const [quantity, setQuantity] = useState(1)
   const [activeTab, setActiveTab] = useState<'description' | 'reviews'>('description')
+
+  useEffect(() => {
+    async function fetchProduct() {
+      try {
+        setLoading(true)
+        const response = await productsAPI.getById(productId)
+        if (response.success && response.product) {
+          setProduct(response.product)
+          
+          // Fetch related products if available
+          if (response.product.relatedProducts && response.product.relatedProducts.length > 0) {
+            const allProductsResponse = await productsAPI.getAll()
+            if (allProductsResponse.success) {
+              const related = allProductsResponse.products.filter((p: Product) => 
+                response.product.relatedProducts?.includes(p.id)
+              )
+              setRelatedProducts(related)
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching product:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchProduct()
+  }, [productId])
 
   if (!product) {
     return (
@@ -45,10 +90,56 @@ export default function ProductDetailPage() {
     }).format(amount)
   }
 
-  // Get related products
-  const relatedProducts = product.relatedProducts
-    ? products.filter(p => product.relatedProducts?.includes(p.id))
-    : []
+  // Calculate price per unit
+  const calculatePricePerUnit = () => {
+    if (!product?.unit) return null
+    
+    const match = product.unit.match(/(\d+(?:\.\d+)?)\s*(\w+)/)
+    if (!match) return null
+    
+    const quantity = parseFloat(match[1])
+    const unit = match[2]
+    
+    if (quantity <= 0) return null
+    
+    const pricePerUnit = product.price / quantity
+    
+    const unitMap: { [key: string]: string } = {
+      'kg': 'kg',
+      'l': 'liter',
+      'L': 'liter', 
+      'liter': 'liter',
+      'butir': 'butir',
+      'pcs': 'pcs',
+      'pack': 'pack',
+      'gr': 'gram',
+      'g': 'gram'
+    }
+    
+    const displayUnit = unitMap[unit] || unit
+    
+    return {
+      price: pricePerUnit,
+      unit: displayUnit
+    }
+  }
+
+  const pricePerUnit = calculatePricePerUnit()
+
+  if (loading) {
+    return (
+      <>
+        <Navbar />
+        <div className="min-h-screen bg-gray-50 py-12">
+          <div className="container mx-auto px-4 text-center">
+            <div className="inline-block animate-spin rounded-full h-16 w-16 border-4 border-gray-300 border-t-primary-blue"></div>
+            <p className="mt-4 text-gray-600">Memuat produk...</p>
+          </div>
+        </div>
+        <Footer />
+      </>
+    )
+  }
 
   return (
     <>
@@ -101,11 +192,28 @@ export default function ProductDetailPage() {
                   <p className="text-sm text-gray-500 mb-4">Belum ada review</p>
                 )}
 
+                {/* Package Info */}
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Package size={20} className="text-blue-600" />
+                    <span className="font-semibold text-gray-800">Informasi Kemasan</span>
+                  </div>
+                  <p className="text-2xl font-bold text-blue-600">
+                    📦 {product.unit}
+                  </p>
+                  {pricePerUnit && (
+                    <p className="text-sm text-gray-600 mt-1">
+                      ≈ {formatCurrency(pricePerUnit.price)} per {pricePerUnit.unit}
+                    </p>
+                  )}
+                </div>
+
+                {/* Price */}
                 <div className="mb-4">
+                  <p className="text-sm text-gray-600 mb-1">Harga Total</p>
                   <span className="text-4xl font-bold text-green-600">
                     {formatCurrency(product.price)}
                   </span>
-                  <span className="text-gray-600 ml-2">/ {product.unit}</span>
                 </div>
 
                 <div className="flex items-center gap-2 mb-6">

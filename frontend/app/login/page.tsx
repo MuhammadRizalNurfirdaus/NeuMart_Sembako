@@ -36,7 +36,7 @@ export default function LoginPage() {
     setError(null)
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api'
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003/api'
       const response = await axios.post(`${apiUrl}/auth/login-credentials`, {
         username,
         password
@@ -77,7 +77,7 @@ export default function LoginPage() {
 
       // Send user data to backend API
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api'
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003/api'
         await axios.post(`${apiUrl}/auth/login`, {
           uid: userData.uid,
           email: userData.email,

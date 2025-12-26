@@ -46,7 +46,7 @@ export default function AdminLoginPage() {
 
       // Send to backend
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api'
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003/api'
         await axios.post(`${apiUrl}/auth/login`, {
           ...adminUser,
           loginAt: new Date().toISOString()

@@ -75,7 +75,7 @@ export default function Chatbot({ type = 'customer' }: ChatbotProps) {
     // Simulate AI response
     setTimeout(async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api'
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003/api'
         const response = await axios.post(`${apiUrl}/ai/chat`, {
           message: messageText,
           type,

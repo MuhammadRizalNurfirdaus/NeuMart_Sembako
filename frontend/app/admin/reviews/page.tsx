@@ -40,7 +40,7 @@ export default function ReviewsPage() {
 
   const fetchReviews = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/reviews/all')
+      const response = await fetch('http://localhost:3003/api/reviews/all')
       const data = await response.json()
 
       if (data.success) {
@@ -56,7 +56,7 @@ export default function ReviewsPage() {
 
   const handleUpdateStatus = async (reviewId: string, status: string) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/reviews/${reviewId}/status`, {
+      const response = await fetch(`http://localhost:3003/api/reviews/${reviewId}/status`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -80,7 +80,7 @@ export default function ReviewsPage() {
     }
 
     try {
-      const response = await fetch(`http://localhost:3001/api/reviews/${reviewId}`, {
+      const response = await fetch(`http://localhost:3003/api/reviews/${reviewId}`, {
         method: 'DELETE'
       })
 

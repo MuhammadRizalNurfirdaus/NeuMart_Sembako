@@ -41,7 +41,8 @@ export default function ReviewForm({
     setIsSubmitting(true)
 
     try {
-      const response = await fetch('http://localhost:3001/api/reviews/create', {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003/api'
+      const response = await fetch(`${apiUrl}/reviews/create`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

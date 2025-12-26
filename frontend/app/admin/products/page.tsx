@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { FiPlus, FiEdit2, FiTrash2, FiSearch, FiX, FiImage } from 'react-icons/fi'
 
-const API_URL = 'http://localhost:3001/api'
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003/api'
 
 interface Product {
   id: number
@@ -213,12 +213,21 @@ export default function AdminProductsPage() {
                     <div className="flex items-center space-x-3">
                       {product.image ? (
                         <img 
-                          src={`${API_URL.replace('/api', '')}/uploads/${product.image}`} 
+                          src={product.image.startsWith('http') ? product.image : `${API_URL.replace('/api', '')}/uploads/${product.image}`}
                           alt={product.name}
                           className="w-16 h-16 object-cover rounded-lg"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                            e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                          }}
                         />
-                      ) : (
+                      ) : null}
+                      {!product.image || product.image === '' ? (
                         <div className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
+                          <FiImage className="text-gray-400 text-2xl" />
+                        </div>
+                      ) : (
+                        <div className="hidden w-16 h-16 bg-gray-200 rounded-lg items-center justify-center">
                           <FiImage className="text-gray-400 text-2xl" />
                         </div>
                       )}

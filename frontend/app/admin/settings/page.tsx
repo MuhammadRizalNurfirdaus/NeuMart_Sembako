@@ -80,7 +80,7 @@ export default function AdminSettingsPage() {
     }
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api'
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003/api'
       const response = await axios.post(`${apiUrl}/admin/change-password`, {
         currentPassword: passwordData.currentPassword,
         newPassword: passwordData.newPassword
@@ -106,7 +106,7 @@ export default function AdminSettingsPage() {
     setPaymentMessage(null)
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api'
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003/api'
       await axios.post(`${apiUrl}/admin/payment-settings`, paymentMethods)
       setPaymentMessage({ type: 'success', text: 'Pengaturan metode pembayaran berhasil disimpan!' })
     } catch (error) {
@@ -122,7 +122,7 @@ export default function AdminSettingsPage() {
     setNotificationMessage(null)
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api'
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003/api'
       await axios.post(`${apiUrl}/admin/notification-settings`, notifications)
       setNotificationMessage({ type: 'success', text: 'Pengaturan notifikasi berhasil disimpan!' })
     } catch (error) {
@@ -138,7 +138,7 @@ export default function AdminSettingsPage() {
     setBackupMessage(null)
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api'
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003/api'
       const response = await axios.get(`${apiUrl}/admin/backup`, {
         responseType: 'blob'
       })
@@ -172,7 +172,7 @@ export default function AdminSettingsPage() {
       const formData = new FormData()
       formData.append('backup', file)
 
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api'
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003/api'
       await axios.post(`${apiUrl}/admin/restore`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       })

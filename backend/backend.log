@@ -1,0 +1,26 @@
+nohup: ignoring input
+
+> neumart-sembako-backend@1.0.0 dev
+> ts-node-dev --respawn --transpile-only server/index.ts
+
+[INFO] 18:09:41 ts-node-dev ver. 2.0.0 (using ts-node ver. 10.9.2, typescript ver. 5.9.3)
+🔍 Testing database connection...
+✅ Connected to PostgreSQL database
+✅ Database connection successful!
+🔄 Initializing database schema...
+✅ Table "users" ready
+✅ Table "categories" ready
+✅ Table "products" ready
+✅ Table "related_products" ready
+✅ Table "orders" ready
+✅ Table "order_items" ready
+✅ Table "reviews" ready
+✅ Table "ai_logs" ready
+✅ Indexes created
+✅ Default categories inserted
+✅ Default users created
+🎉 Database initialization complete!
+✅ Database ready!
+🚀 Backend server running on http://localhost:3003
+📡 API available at http://localhost:3003/api
+🖼️  Upload directory: /home/rizal/MyProject/NeuMart_Sembako/backend/uploads
