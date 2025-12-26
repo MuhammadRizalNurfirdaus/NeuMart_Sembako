@@ -46,7 +46,8 @@ export default function ReviewList({ productId }: ReviewListProps) {
 
   const fetchReviews = async () => {
     try {
-      const response = await fetch(`http://localhost:3001/api/reviews/product/${productId}`)
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003/api'
+      const response = await fetch(`${apiUrl}/reviews/product/${productId}`)
       const data = await response.json()
 
       if (data.success) {

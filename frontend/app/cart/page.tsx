@@ -60,9 +60,19 @@ export default function CartPage() {
                     />
                     <div className="flex-1">
                       <h3 className="text-xl font-bold text-gray-800">{item.product.name}</h3>
-                      <p className="text-gray-600">{item.product.category} - {item.product.unit}</p>
-                      <p className="text-2xl font-bold text-primary-blue mt-2">
-                        {formatPrice(item.product.price)}
+                      <p className="text-sm text-gray-600">
+                        {item.product.category}
+                      </p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
+                          📦 {item.product.unit}
+                        </span>
+                      </div>
+                      <p className="text-lg font-bold text-primary-blue mt-2">
+                        {formatPrice(item.product.price)} <span className="text-sm font-normal text-gray-500">/ {item.product.unit}</span>
+                      </p>
+                      <p className="text-sm text-gray-600 mt-1">
+                        Subtotal: <span className="font-semibold">{formatPrice(item.product.price * item.quantity)}</span>
                       </p>
                     </div>
 

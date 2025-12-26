@@ -129,9 +129,9 @@ router.post('/', upload.single('image'), async (req: Request, res: Response) => 
       categoryId = newCategoryResult.rows[0].id
     }
 
-    // Handle image
+    // Handle image - save filename only, not full URL
     const imageUrl = req.file 
-      ? `http://localhost:3001/uploads/${req.file.filename}`
+      ? req.file.filename
       : null
 
     // Insert product
@@ -191,10 +191,10 @@ router.put('/:id', upload.single('image'), async (req: Request, res: Response) =
       categoryId = newCategoryResult.rows[0].id
     }
 
-    // Build update query
+    // Build update query - save filename only, not full URL
     let imageUrl = null
     if (req.file) {
-      imageUrl = `http://localhost:3001/uploads/${req.file.filename}`
+      imageUrl = req.file.filename
     }
 
     const updateQuery = imageUrl
