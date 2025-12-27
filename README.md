@@ -9,7 +9,68 @@
 
 **Toko Sembako Pintar dengan 8 Fitur AI & Admin Dashboard** 🤖📊
 
-> E-commerce platform lengkap dengan AI recommendation, recipe generator, chatbot, review system, payment gateway, dan admin CRUD dashboard - All powered by Next.js 14, Express.js, PostgreSQL & OpenAI
+> E-commerce platform lengkap dengan AI recommendation, recipe generator, chatbot, review system, payment gateway, maps integration, dan admin CRUD dashboard - All powered by Next.js 14, Express.js, PostgreSQL & OpenAI
+
+---
+
+## 🎉 UPDATE TERBARU - Desember 2025
+
+### ✨ Perbaikan & Fitur Baru yang Sudah Ditambahkan:
+
+#### 🗺️ **Maps Integration (100% GRATIS!)**
+- ✅ **OpenStreetMap dengan Leaflet** - Ganti Google Maps dengan solusi gratis selamanya
+- ✅ **Interactive Maps** - Peta interaktif dengan pin yang bisa di-drag
+- ✅ **Location Search** - Cari alamat atau tempat dengan Nominatim
+- ✅ **GPS Auto-Detect** - Deteksi lokasi pengguna otomatis
+- ✅ **Reverse Geocoding** - Koordinat otomatis jadi alamat lengkap
+- ✅ **No API Key Required** - Langsung jalan tanpa konfigurasi ribet
+- ✅ **No Credit Card** - Tidak perlu bayar atau kartu kredit
+- 📖 Dokumentasi: `MAPS_GUIDE.md`
+
+#### 🍳 **AI Recipe Generator - Super Detail!**
+- ✅ **Auto-Detect Ingredients** - Deteksi bahan dari keranjang DAN pesanan yang sudah diterima
+- ✅ **Extremely Detailed Recipes** - Resep dengan 9-18 langkah detail (bukan 4 langkah singkat)
+- ✅ **Precise Measurements** - Takaran pasti (200g, 250ml, 2 butir, dll)
+- ✅ **Step-by-Step Instructions** - Instruksi lengkap dengan timing (30 detik, 2-3 menit)
+- ✅ **Professional Tips** - 6-11 tips per resep dengan penjelasan ilmiah
+- ✅ **Beginner-Friendly** - Cocok untuk yang belum pernah masak
+- ✅ **Clickable Recipe Cards** - Klik card untuk lihat detail lengkap di modal
+- ✅ **Rich Descriptions** - Setiap resep punya deskripsi menarik dan lengkap
+- ✅ **Photo Display** - Foto bahan-bahan ditampilkan dengan proper URL handling
+
+#### 🔐 **Unified Login System**
+- ✅ **Single Login Page** - Admin dan customer login di satu halaman
+- ✅ **Auto Role Detection** - Email `admin123@gmail.com` otomatis jadi admin, sisanya customer
+- ✅ **No More Blank Login** - Fix admin login page yang tadinya blank
+- ✅ **Seamless Experience** - User tidak perlu pilih role, sistem auto-detect
+
+#### 📊 **Admin Dashboard Improvements**
+- ✅ **Chart.js Fixed** - Perbaiki error "linear is not a registered scale"
+- ✅ **Proper Component Registration** - Chart.js components registered dengan benar
+- ✅ **Dynamic Imports** - Fix SSR issues dengan dynamic Chart.js loading
+- ✅ **Beautiful Analytics** - Grafik penjualan, revenue, dan order trends
+
+#### 🛒 **Enhanced Checkout**
+- ✅ **Product Photos** - Ringkasan pesanan dengan foto produk yang benar
+- ✅ **Proper Image URLs** - getImageUrl helper untuk local/external images
+- ✅ **Maps Integration** - Pilih lokasi pengiriman di peta
+- ✅ **GPS Coordinates** - Simpan latitude & longitude untuk akurasi tinggi
+- ✅ **Better Layout** - Card layout lebih rapi dengan badge kuantitas
+
+#### 🎨 **UI/UX Improvements**
+- ✅ **Uniform Product Cards** - Semua card produk tinggi sejajar dengan flexbox
+- ✅ **Object-Contain Images** - Foto produk tidak terpotong, tampil penuh
+- ✅ **Better Icons** - Ganti FiChefHat dengan GiChefToque yang tersedia
+- ✅ **Responsive Design** - Layout responsive di semua ukuran layar
+- ✅ **Loading States** - Indicator loading untuk better UX
+
+#### 🐛 **Bug Fixes**
+- ✅ Fix Chart.js registration error di admin reports
+- ✅ Fix blank admin login page
+- ✅ Fix recipe icon not found error
+- ✅ Fix product image display issues
+- ✅ Fix card height inconsistencies
+- ✅ Fix TypeScript interface errors
 
 ---
 
@@ -270,7 +331,9 @@ GET  /api/db-test               # Test database connection
 - 🎨 **Tailwind CSS** (Styling)
 - 📦 **Zustand** (State management)
 - 🔗 **Axios** (HTTP client)
-- 🎭 **Lucide React** (Modern icons)
+- 🎭 **React Icons** (Lucide, Feather, Game Icons)
+- 🗺️ **Leaflet** (OpenStreetMap integration - 100% FREE!)
+- 📊 **Chart.js** (Analytics & Reports)
 - 🔥 **Firebase** (Authentication & Storage)
 - 📘 **TypeScript** (Type safety)
 
@@ -376,8 +439,7 @@ NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
 ## �📚 Dokumentasi Lengkap
 
 Lihat dokumentasi detail di root project:
-- `README.md` - Main documentation (file ini)
-- `ADMIN_CRUD_API.md` - Admin CRUD API documentation
+- `README.md` - Main documentation (file ini)- `MAPS_GUIDE.md` - **[BARU!]** Panduan Maps Integration (OpenStreetMap)- `ADMIN_CRUD_API.md` - Admin CRUD API documentation
 - `DATABASE_SCHEMA.md` - Database schema & migrations
 - `GOOGLE_AUTH_SETUP.md` - Google OAuth setup guide
 - `ADMIN_PANEL_GUIDE.md` - Admin panel user guide
@@ -402,23 +464,171 @@ Dokumentasi frontend:
 ✅ **Real-time Stats** - Dashboard analytics with revenue, orders, customers  
 ✅ **Review System** - Rating, comments, photos, sentiment analysis  
 ✅ **TypeScript** - 100% type-safe codebase  
+✅ **Maps Integration** - OpenStreetMap with Leaflet (100% FREE!)  
+✅ **Detailed AI Recipes** - 9-18 step recipes with precise measurements  
+✅ **Unified Login** - Single login page with auto role detection  
+
+---
+
+## 🆕 What's New in Latest Update
+
+### 🗺️ Maps & Location Features
+- **FREE Forever** - No API keys, no credit cards, no sign up
+- **Interactive Maps** - Click, drag, search locations
+- **GPS Support** - Auto-detect current location
+- **Reverse Geocoding** - Coordinates → Full address
+
+### 🍳 AI Recipe Enhancements
+- **Super Detailed** - From 4 steps to 9-18 steps per recipe
+- **Precise Measurements** - 200g, 250ml, 2 butir (not just "telur")
+- **Professional Tips** - 6-11 tips with scientific explanations
+- **Auto-Detect** - Ingredients from cart AND delivered orders
+- **Rich UI** - Clickable cards, modal details, photos
+
+### 🎨 UI/UX Improvements
+- **Better Cards** - Uniform height, aligned buttons
+- **Better Images** - Object-contain, no cropping
+- **Better Icons** - All icons working properly
+- **Better Layout** - Responsive, flexbox, modern design
+
+### 🐛 Critical Fixes
+- Chart.js registration errors → Fixed
+- Admin login blank page → Fixed
+- Product images not showing → Fixed
+- Recipe instructions too short → Fixed (now 9-18 steps!)
+- Card heights inconsistent → Fixed (all aligned now)  
 
 ---
 
 ## 🎉 Happy Coding!
 
-Dibuat dengan ❤️ menggunakan Next.js 14, Express.js, PostgreSQL, TypeScript, dan OpenAI
+Dibuat dengan ❤️ menggunakan Next.js 14, Express.js, PostgreSQL, TypeScript, Leaflet, dan OpenAI
 
 **NeuMart Sembako - Toko Sembako Pintar dengan AI** 🛒🤖
 
 ---
 
 ### 📊 Project Stats
-- **Lines of Code:** 10,000+
-- **Components:** 15+
+- **Lines of Code:** 12,000+
+- **Components:** 20+
 - **API Endpoints:** 40+
 - **Database Tables:** 8
 - **AI Features:** 8
 - **Admin CRUD Operations:** 20+
+- **Maps Integration:** OpenStreetMap (FREE!)
+- **Recipe Database:** 6+ detailed recipes (9-18 steps each)
 
-**Version:** 2.0.0 | **Last Updated:** December 25, 2025
+**Version:** 2.5.0 | **Last Updated:** December 27, 2025
+
+---
+
+## 🎯 Known Issues & Future Improvements
+
+### In Progress
+- [ ] Payment gateway integration (Midtrans/Xendit)
+- [ ] Email notifications for orders
+- [ ] Advanced filtering & sorting
+- [ ] Wishlist feature
+- [ ] Product comparison
+
+### Completed ✅
+- [x] Maps integration (OpenStreetMap with Leaflet)
+- [x] Detailed AI recipes (9-18 steps with precise measurements)
+- [x] Unified login system (auto role detection)
+- [x] Chart.js registration fixes
+- [x] Product card UI improvements
+- [x] Image display fixes (getImageUrl helper)
+- [x] Auto-detect ingredients from cart + delivered orders
+
+---
+
+## 💡 Tips for Developers
+
+### For Frontend Development
+```bash
+cd frontend
+npm run dev
+```
+Access at: http://localhost:3000
+
+### For Backend Development
+```bash
+cd backend
+npm run dev
+```
+Access at: http://localhost:3003
+
+### For Testing Maps Feature
+1. Go to checkout page (http://localhost:3000/checkout)
+2. Click "Pilih di Maps" button
+3. No API key needed - OpenStreetMap works out of the box!
+4. Try: Click on map, search location, or use "Gunakan Lokasi Saya"
+
+### For Testing AI Recipes
+1. Add products to cart (beras, telur, gula, dll)
+2. Go to `/ai-recipe`
+3. See detailed recipes with 9-18 step instructions
+4. Click recipe card to see full modal with tips
+
+### Admin Login
+```
+Email: admin123@gmail.com
+Password: admin123
+```
+
+---
+
+## 🙏 Credits & Acknowledgments
+
+### Technologies Used
+- **Next.js** - The React Framework for the Web
+- **OpenStreetMap** - Free, editable map of the world
+- **Leaflet** - Leading open-source JavaScript library for mobile-friendly maps
+- **Nominatim** - Free geocoding service from OpenStreetMap
+- **PostgreSQL** - The World's Most Advanced Open Source Database
+- **Express.js** - Fast, unopinionated, minimalist web framework
+- **Chart.js** - Simple yet flexible JavaScript charting
+- **Tailwind CSS** - Utility-first CSS framework
+
+### Special Thanks
+- OpenStreetMap contributors worldwide 🌍
+- Leaflet.js community
+- Next.js team at Vercel
+- PostgreSQL developers
+- All open-source maintainers and contributors
+
+### Why We Love Open Source
+This project heavily relies on FREE and OPEN SOURCE technologies:
+- 🗺️ **OpenStreetMap** instead of Google Maps (save $$$)
+- 📦 **PostgreSQL** instead of proprietary databases
+- ⚡ **Next.js** open source framework
+- 🎨 **Tailwind CSS** free styling
+- 📊 **Chart.js** free charts
+
+**No vendor lock-in. No hidden costs. Full transparency.** ✨
+
+---
+
+## 📞 Support & Contact
+
+Butuh bantuan? Punya pertanyaan? Hubungi kami:
+
+### Developer: Muhammad Rizal Nurfirdaus
+- 📧 Email: muhammadrizalnurfirdaus@gmail.com
+- 📱 WhatsApp: +62 831-0146-1069
+- 📷 Instagram: @crawasy_zall
+- 👤 Facebook: Rizal Nurfirdaus
+- 🐦 Twitter: @NurfirdausRizal
+
+### Dokumentasi & Resources
+- 📖 Baca `MAPS_GUIDE.md` untuk panduan Maps
+- 📖 Baca `ADMIN_CRUD_API.md` untuk dokumentasi API
+- 📖 Baca `DATABASE_SCHEMA.md` untuk struktur database
+- 🐛 Report bugs via GitHub Issues
+- 💡 Feature requests welcome!
+
+---
+
+**⭐ Star this project if you find it helpful!**
+
+Made with ❤️ in Indonesia 🇮🇩

@@ -1,13 +1,27 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { useCartStore } from '@/store/cartStore'
 import { useAuthStore } from '@/store/authStore'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
-import { FiCreditCard, FiMapPin, FiUser, FiPhone, FiCheck } from 'react-icons/fi'
+import { FiCreditCard, FiMapPin, FiUser, FiPhone, FiCheck, FiMap } from 'react-icons/fi'
 import axios from 'axios'
+import dynamic from 'next/dynamic'
+
+// Import Leaflet dinamically untuk avoid SSR issues
+const MapComponent = dynamic(() => import('@/components/MapPicker'), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-96 rounded-lg bg-gray-100 flex items-center justify-center">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-3"></div>
+        <p className="text-gray-600">Memuat peta...</p>
+      </div>
+    </div>
+  )
+})
 
 export default function CheckoutPage() {
   const router = useRouter()
@@ -15,6 +29,7 @@ export default function CheckoutPage() {
   const { user, isAuthenticated } = useAuthStore()
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
+  const [showMap, setShowMap] = useState(false)
 
   const [formData, setFormData] = useState({
     name: user?.displayName || '',
@@ -23,7 +38,9 @@ export default function CheckoutPage() {
     city: '',
     postalCode: '',
     paymentMethod: 'COD',
-    notes: ''
+    notes: '',
+    latitude: '',
+    longitude: ''
   })
 
   const formatPrice = (price: number) => {
@@ -32,6 +49,23 @@ export default function CheckoutPage() {
       currency: 'IDR',
       minimumFractionDigits: 0
     }).format(price)
+  }
+
+  // Get proper image URL
+  const getImageUrl = (image: string | undefined) => {
+    if (!image) return '/placeholder-product.png'
+    if (image.startsWith('http')) return image
+    return `http://localhost:3003/uploads/${image}`
+  }
+
+  // Handle location update from map
+  const handleLocationUpdate = (lat: number, lng: number, address: string) => {
+    setFormData(prev => ({
+      ...prev,
+      latitude: lat.toString(),
+      longitude: lng.toString(),
+      address: address || prev.address
+    }))
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -64,7 +98,9 @@ export default function CheckoutPage() {
         shippingAddress: {
           address: formData.address,
           city: formData.city,
-          postalCode: formData.postalCode
+          postalCode: formData.postalCode,
+          latitude: formData.latitude,
+          longitude: formData.longitude
         },
         notes: formData.notes,
         createdAt: new Date().toISOString()
@@ -189,9 +225,19 @@ export default function CheckoutPage() {
 
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-gray-700 font-semibold mb-2">
-                        Alamat Lengkap *
-                      </label>
+                      <div className="flex items-center justify-between mb-2">
+                        <label className="block text-gray-700 font-semibold">
+                          Alamat Lengkap *
+                        </label>
+                        <button
+                          type="button"
+                          onClick={() => setShowMap(!showMap)}
+                          className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 font-semibold"
+                        >
+                          <FiMap />
+                          {showMap ? 'Tutup Maps' : 'Pilih di Maps'}
+                        </button>
+                      </div>
                       <textarea
                         name="address"
                         value={formData.address}
@@ -201,7 +247,36 @@ export default function CheckoutPage() {
                         placeholder="Jl. Contoh No. 123, RT/RW 01/02"
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
+                      {formData.latitude && formData.longitude && (
+                        <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
+                          <FiCheck className="text-sm" />
+                          Koordinat: {parseFloat(formData.latitude).toFixed(6)}, {parseFloat(formData.longitude).toFixed(6)}
+                        </p>
+                      )}
                     </div>
+                    
+                    {/* OpenStreetMap (100% GRATIS) */}
+                    {showMap && (
+                      <div className="border-2 border-blue-200 rounded-lg p-4 bg-blue-50">
+                        <div className="bg-green-50 border border-green-300 rounded-lg p-3 mb-3">
+                          <div className="flex items-center gap-2">
+                            <span className="text-xl">✅</span>
+                            <p className="text-sm text-green-700">
+                              <strong>100% GRATIS!</strong> Menggunakan OpenStreetMap - Tidak perlu API key, tidak perlu bayar, tidak perlu sign up!
+                            </p>
+                          </div>
+                        </div>
+                        <MapComponent
+                          onLocationUpdate={handleLocationUpdate}
+                          initialLat={formData.latitude ? parseFloat(formData.latitude) : -6.2088}
+                          initialLng={formData.longitude ? parseFloat(formData.longitude) : 106.8456}
+                        />
+                        <p className="text-xs text-gray-600 mt-2">
+                          💡 Klik pada peta untuk menentukan lokasi pengiriman yang tepat. Gunakan tombol "Lokasi Saya" untuk deteksi otomatis.
+                        </p>
+                      </div>
+                    )}
+                    
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-gray-700 font-semibold mb-2">
@@ -311,18 +386,29 @@ export default function CheckoutPage() {
                 <div className="bg-white rounded-xl shadow-md p-6 sticky top-24">
                   <h2 className="text-2xl font-bold text-gray-800 mb-6">Ringkasan Pesanan</h2>
 
-                  <div className="space-y-3 mb-6 max-h-64 overflow-y-auto">
+                  <div className="space-y-3 mb-6 max-h-96 overflow-y-auto">
                     {items.map(item => (
-                      <div key={item.product.id} className="flex gap-3 pb-3 border-b">
-                        <img 
-                          src={item.product.image} 
-                          alt={item.product.name}
-                          className="w-16 h-16 object-cover rounded-lg"
-                        />
-                        <div className="flex-1">
-                          <p className="font-semibold text-gray-800 text-sm">{item.product.name}</p>
-                          <p className="text-xs text-gray-600">{item.quantity} x {formatPrice(item.product.price)}</p>
-                          <p className="text-sm font-bold text-blue-600">{formatPrice(item.product.price * item.quantity)}</p>
+                      <div key={item.product.id} className="flex gap-3 pb-3 border-b border-gray-200 hover:bg-gray-50 p-2 rounded-lg transition">
+                        <div className="relative w-20 h-20 bg-white border border-gray-200 rounded-lg overflow-hidden flex-shrink-0">
+                          <img 
+                            src={getImageUrl(item.product.image)} 
+                            alt={item.product.name}
+                            className="w-full h-full object-contain p-1"
+                            onError={(e) => {
+                              e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200"%3E%3Crect fill="%23ddd" width="200" height="200"/%3E%3Ctext fill="%23999" font-family="sans-serif" font-size="40" dy="10.5" font-weight="bold" x="50%25" y="50%25" text-anchor="middle"%3E📦%3C/text%3E%3C/svg%3E'
+                            }}
+                          />
+                          <div className="absolute top-1 right-1 bg-blue-600 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
+                            {item.quantity}
+                          </div>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-semibold text-gray-800 text-sm line-clamp-2 mb-1">{item.product.name}</p>
+                          <p className="text-xs text-gray-500 mb-1">{item.product.unit}</p>
+                          <div className="flex items-center justify-between">
+                            <p className="text-xs text-gray-600">{item.quantity} x {formatPrice(item.product.price)}</p>
+                            <p className="text-sm font-bold text-blue-600">{formatPrice(item.product.price * item.quantity)}</p>
+                          </div>
                         </div>
                       </div>
                     ))}
