@@ -8,6 +8,12 @@ import { useAuthStore } from '@/store/authStore'
 import { FaGoogle, FaShoppingBag } from 'react-icons/fa'
 import axios from 'axios'
 
+// Admin credentials
+const ADMIN_CREDENTIALS = {
+  email: 'admin123@gmail.com',
+  password: 'admin123'
+}
+
 export default function LoginPage() {
   const router = useRouter()
   const { user, setUser, isAuthenticated } = useAuthStore()
@@ -36,24 +42,51 @@ export default function LoginPage() {
     setError(null)
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003/api'
-      const response = await axios.post(`${apiUrl}/auth/login-credentials`, {
-        username,
-        password
-      })
-
-      if (response.data.success) {
-        // Save user to Zustand store
-        setUser(response.data.user)
-        
-        // Redirect based on role
-        if (response.data.user.role === 'admin') {
-          router.push('/admin/dashboard')
-        } else {
-          router.push('/')
+      // Check if credentials match admin
+      if (username === ADMIN_CREDENTIALS.email && password === ADMIN_CREDENTIALS.password) {
+        // Login as admin
+        const adminUser = {
+          uid: 'admin-001',
+          email: ADMIN_CREDENTIALS.email,
+          displayName: 'Administrator',
+          photoURL: null,
+          emailVerified: true,
+          role: 'admin' as const
         }
+
+        // Save to store
+        setUser(adminUser)
+
+        // Send to backend
+        try {
+          const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003/api'
+          await axios.post(`${apiUrl}/auth/login`, {
+            ...adminUser,
+            loginAt: new Date().toISOString()
+          })
+        } catch (apiError) {
+          console.error('Failed to send admin data to backend:', apiError)
+        }
+
+        // Redirect to admin dashboard
+        router.push('/admin/dashboard')
       } else {
-        setError(response.data.message || 'Username atau password salah')
+        // Try customer login via backend
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003/api'
+        const response = await axios.post(`${apiUrl}/auth/login-credentials`, {
+          username,
+          password
+        })
+
+        if (response.data.success) {
+          // Save user to Zustand store
+          setUser(response.data.user)
+          
+          // Redirect to home
+          router.push('/')
+        } else {
+          setError(response.data.message || 'Username atau password salah')
+        }
       }
     } catch (err: any) {
       console.error('Login failed:', err)
@@ -128,17 +161,17 @@ export default function LoginPage() {
 
         {/* Login Form */}
         <form onSubmit={handleSubmit} className="space-y-4 mb-6">
-          {/* Username */}
+          {/* Username/Email */}
           <div>
             <label htmlFor="username" className="block text-gray-700 font-semibold mb-2">
-              Username
+              Email / Username
             </label>
             <input
               id="username"
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="Masukkan username"
+              placeholder="Masukkan Username"
               required
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
@@ -154,7 +187,7 @@ export default function LoginPage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Masukkan password"
+              placeholder="Masukkan Password"
               required
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />

@@ -4,8 +4,11 @@ import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import ProductCard from '@/components/ProductCard'
 import { useState, useEffect } from 'react'
-import { FiSearch } from 'react-icons/fi'
+import { useRouter } from 'next/navigation'
+import { FiSearch, FiX } from 'react-icons/fi'
+import { GiChefToque, GiCookingPot } from 'react-icons/gi'
 import { productsAPI } from '@/lib/api'
+import { useCartStore } from '@/store/cartStore'
 
 interface Product {
   id: number
@@ -19,11 +22,21 @@ interface Product {
 }
 
 export default function ProductsPage() {
+  const router = useRouter()
+  const { items } = useCartStore()
   const [selectedCategory, setSelectedCategory] = useState('Semua')
   const [searchQuery, setSearchQuery] = useState('')
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [showRecipeBanner, setShowRecipeBanner] = useState(false)
+
+  // Show recipe banner if user has items
+  useEffect(() => {
+    if (items.length >= 3) {
+      setShowRecipeBanner(true)
+    }
+  }, [items])
   
   // Fetch products from API
   useEffect(() => {
@@ -61,6 +74,39 @@ export default function ProductsPage() {
   return (
     <>
       <Navbar />
+      
+      {/* AI Recipe Suggestion Banner */}
+      {showRecipeBanner && (
+        <div className="bg-gradient-to-r from-green-500 via-emerald-500 to-blue-500 text-white py-3 px-4 sticky top-16 z-40 shadow-lg">
+          <div className="container mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="text-3xl">🍳</div>
+              <div>
+                <p className="font-bold">Punya {items.length} bahan di keranjang!</p>
+                <p className="text-xs text-green-50">
+                  Lihat rekomendasi resep dari AI berdasarkan bahan yang Anda punya
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => router.push('/ai-recipe')}
+                className="bg-white text-green-600 px-4 py-2 rounded-lg font-bold hover:shadow-xl transition-all text-sm flex items-center gap-2"
+              >
+                <GiChefToque />
+                Lihat Resep
+              </button>
+              <button
+                onClick={() => setShowRecipeBanner(false)}
+                className="text-white hover:bg-white/20 p-2 rounded-lg transition-all"
+              >
+                <FiX />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
       <div className="min-h-screen bg-gray-50 py-12">
         <div className="container mx-auto px-4">
           <h1 className="text-4xl font-bold text-gray-800 mb-8 text-center">

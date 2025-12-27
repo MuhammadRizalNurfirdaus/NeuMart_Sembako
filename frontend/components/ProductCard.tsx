@@ -75,7 +75,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group">
+    <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group flex flex-col h-full">
       {showNotification && (
         <div className="absolute top-2 right-2 bg-green-500 text-white px-3 py-1 rounded-full text-sm z-10 animate-bounce">
           ✓ Ditambahkan!
@@ -83,11 +83,11 @@ export default function ProductCard({ product }: ProductCardProps) {
       )}
       
       <Link href={`/products/${product.id}`}>
-        <div className="relative h-48 bg-gradient-to-br from-blue-50 to-green-50 flex items-center justify-center cursor-pointer overflow-hidden">
+        <div className="relative h-48 bg-white flex items-center justify-center cursor-pointer overflow-hidden border-b border-gray-100">
           <img
             src={getImageUrl(product.image)}
             alt={product.name}
-            className="h-full w-full object-cover group-hover:scale-110 transition-transform"
+            className="h-full w-full object-contain p-2 group-hover:scale-105 transition-transform"
             onError={(e) => {
               e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200"%3E%3Crect fill="%23ddd" width="200" height="200"/%3E%3Ctext fill="%23999" font-family="sans-serif" font-size="40" dy="10.5" font-weight="bold" x="50%25" y="50%25" text-anchor="middle"%3E📦%3C/text%3E%3C/svg%3E'
             }}
@@ -98,9 +98,9 @@ export default function ProductCard({ product }: ProductCardProps) {
         </div>
       </Link>
 
-      <div className="p-4">
+      <div className="p-4 flex flex-col flex-1">
         <Link href={`/products/${product.id}`}>
-          <h3 className="text-lg font-bold text-gray-800 mb-2 hover:text-blue-600 cursor-pointer">
+          <h3 className="text-lg font-bold text-gray-800 mb-2 hover:text-blue-600 cursor-pointer line-clamp-2 min-h-[56px]">
             {product.name}
           </h3>
         </Link>
@@ -127,7 +127,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           </div>
         ) : null}
         
-        <p className="text-sm text-gray-600 mb-3 line-clamp-2">{product.description}</p>
+        <p className="text-sm text-gray-600 mb-3 line-clamp-2 min-h-[40px]">{product.description}</p>
         
         {/* Package Size Badge */}
         <div className="mb-3">
@@ -159,18 +159,20 @@ export default function ProductCard({ product }: ProductCardProps) {
           )}
         </div>
 
-        <button
-          onClick={handleAddToCart}
-          disabled={product.stock === 0}
-          className={`w-full py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition ${
-            product.stock === 0
-              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              : 'bg-primary-blue text-white hover:bg-blue-600'
-          }`}
-        >
-          <FiShoppingCart />
-          {product.stock === 0 ? 'Stok Habis' : 'Tambah ke Keranjang'}
-        </button>
+        <div className="mt-auto">
+          <button
+            onClick={handleAddToCart}
+            disabled={product.stock === 0}
+            className={`w-full py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition ${
+              product.stock === 0
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                : 'bg-primary-blue text-white hover:bg-blue-600'
+            }`}
+          >
+            <FiShoppingCart />
+            {product.stock === 0 ? 'Stok Habis' : 'Tambah ke Keranjang'}
+          </button>
+        </div>
       </div>
     </div>
   )

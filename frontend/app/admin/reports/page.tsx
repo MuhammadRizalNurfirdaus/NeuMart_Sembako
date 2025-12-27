@@ -1,11 +1,44 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { FiDownload, FiCalendar, FiDollarSign, FiTrendingUp } from 'react-icons/fi'
-import { Line, Bar } from 'react-chartjs-2'
+import dynamic from 'next/dynamic'
+
+// Dynamically import charts with no SSR
+const Line = dynamic(() => import('react-chartjs-2').then((mod) => mod.Line), {
+  ssr: false,
+  loading: () => <div className="h-64 flex items-center justify-center">Loading chart...</div>
+})
+const Bar = dynamic(() => import('react-chartjs-2').then((mod) => mod.Bar), {
+  ssr: false,
+  loading: () => <div className="h-64 flex items-center justify-center">Loading chart...</div>
+})
 
 export default function AdminReportsPage() {
   const [dateRange, setDateRange] = useState('30days')
+  const [chartsReady, setChartsReady] = useState(false)
+
+  // Register Chart.js components on client side only
+  useEffect(() => {
+    const registerCharts = async () => {
+      const { Chart: ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend } = await import('chart.js')
+      
+      ChartJS.register(
+        CategoryScale,
+        LinearScale,
+        PointElement,
+        LineElement,
+        BarElement,
+        Title,
+        Tooltip,
+        Legend
+      )
+      
+      setChartsReady(true)
+    }
+    
+    registerCharts()
+  }, [])
 
   const codRevenue = 8950000
   const onlineRevenue = 6800000
@@ -146,7 +179,13 @@ export default function AdminReportsPage() {
           Perbandingan Pendapatan COD vs Online Transfer
         </h2>
         <div className="h-80">
-          <Bar data={revenueByDateData} options={chartOptions} />
+          {chartsReady ? (
+            <Bar data={revenueByDateData} options={chartOptions} />
+          ) : (
+            <div className="h-full flex items-center justify-center">
+              <div className="text-gray-500">Loading chart...</div>
+            </div>
+          )}
         </div>
       </div>
 

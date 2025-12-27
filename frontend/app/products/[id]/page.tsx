@@ -126,6 +126,13 @@ export default function ProductDetailPage() {
 
   const pricePerUnit = calculatePricePerUnit()
 
+  // Get proper image URL
+  const getImageUrl = (image: string | undefined) => {
+    if (!image) return '/placeholder-product.png'
+    if (image.startsWith('http')) return image
+    return `http://localhost:3003/uploads/${image}`
+  }
+
   if (loading) {
     return (
       <>
@@ -150,11 +157,14 @@ export default function ProductDetailPage() {
           <div className="bg-white rounded-lg shadow-lg overflow-hidden mb-8">
             <div className="grid md:grid-cols-2 gap-8 p-8">
               {/* Product Image */}
-              <div>
+              <div className="bg-white rounded-lg border border-gray-200 flex items-center justify-center p-4">
                 <img
-                  src={product.image}
+                  src={getImageUrl(product.image)}
                   alt={product.name}
-                  className="w-full h-96 object-cover rounded-lg"
+                  className="w-full h-96 object-contain"
+                  onError={(e) => {
+                    e.currentTarget.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400"%3E%3Crect fill="%23ddd" width="400" height="400"/%3E%3Ctext fill="%23999" font-family="sans-serif" font-size="60" dy="10.5" font-weight="bold" x="50%25" y="50%25" text-anchor="middle"%3E📦%3C/text%3E%3C/svg%3E'
+                  }}
                 />
               </div>
 

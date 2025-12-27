@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
-import { FiSearch, FiCheck, FiX, FiClock, FiPackage } from 'react-icons/fi'
+import { useState, useEffect } from 'react'
+import { FiSearch, FiCheck, FiX, FiClock, FiPackage, FiEdit2 } from 'react-icons/fi'
+import axios from 'axios'
 
 interface Order {
   id: number
@@ -55,6 +56,66 @@ export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<Order[]>(mockOrders)
   const [searchTerm, setSearchTerm] = useState('')
   const [filterStatus, setFilterStatus] = useState<string>('all')
+  const [editingOrderId, setEditingOrderId] = useState<number | null>(null)
+  const [updating, setUpdating] = useState(false)
+
+  // Fetch orders from backend
+  useEffect(() => {
+    fetchOrders()
+  }, [])
+
+  const fetchOrders = async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/api/orders')
+      if (response.data.success && response.data.orders) {
+        // Map backend orders to frontend format
+        const formattedOrders = response.data.orders.map((order: any) => ({
+          id: parseInt(order.id.replace('ORD-', '')),
+          customerName: order.user.name,
+          email: order.user.phone,
+          items: order.items.map((item: any) => item.productName),
+          total: order.totalPrice,
+          paymentMethod: order.paymentMethod,
+          paymentStatus: order.paymentStatus,
+          orderStatus: order.orderStatus,
+          date: new Date(order.createdAt).toISOString().split('T')[0],
+          orderId: order.id // Keep original order ID for updates
+        }))
+        setOrders(formattedOrders)
+      }
+    } catch (error) {
+      console.error('Error fetching orders:', error)
+      // Keep using mock data if backend fails
+    }
+  }
+
+  const handleStatusChange = async (order: Order, newStatus: string) => {
+    setUpdating(true)
+    try {
+      const orderId = (order as any).orderId || `ORD-${order.id}`
+      const response = await axios.put(`http://localhost:5000/api/orders/${orderId}/status`, {
+        orderStatus: newStatus
+      })
+
+      if (response.data.success) {
+        // Update local state
+        setOrders(orders.map(o => 
+          o.id === order.id 
+            ? { ...o, orderStatus: newStatus as any }
+            : o
+        ))
+        setEditingOrderId(null)
+        
+        // Show success notification
+        alert('Status pesanan berhasil diubah!')
+      }
+    } catch (error) {
+      console.error('Error updating order status:', error)
+      alert('Gagal mengubah status pesanan')
+    } finally {
+      setUpdating(false)
+    }
+  }
 
   const filteredOrders = orders.filter(order => {
     const matchSearch = order.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -167,6 +228,7 @@ export default function AdminOrdersPage() {
                 <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Pembayaran</th>
                 <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Status</th>
                 <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Tanggal</th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase">Aksi</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
@@ -207,13 +269,38 @@ export default function AdminOrdersPage() {
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <span className={`inline-flex items-center space-x-1 px-3 py-1 rounded-full text-sm font-semibold ${getStatusColor(order.orderStatus)}`}>
-                      {getStatusIcon(order.orderStatus)}
-                      <span>{order.orderStatus}</span>
-                    </span>
+                    {editingOrderId === order.id ? (
+                      <select
+                        value={order.orderStatus}
+                        onChange={(e) => handleStatusChange(order, e.target.value)}
+                        disabled={updating}
+                        className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 text-sm font-semibold"
+                      >
+                        <option value="Pending">Pending</option>
+                        <option value="Processing">Processing</option>
+                        <option value="Shipped">Shipped</option>
+                        <option value="Delivered">Delivered</option>
+                        <option value="Cancelled">Cancelled</option>
+                      </select>
+                    ) : (
+                      <span className={`inline-flex items-center space-x-1 px-3 py-1 rounded-full text-sm font-semibold ${getStatusColor(order.orderStatus)}`}>
+                        {getStatusIcon(order.orderStatus)}
+                        <span>{order.orderStatus}</span>
+                      </span>
+                    )}
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-600">
                     {new Date(order.date).toLocaleDateString('id-ID')}
+                  </td>
+                  <td className="px-6 py-4">
+                    <button
+                      onClick={() => setEditingOrderId(editingOrderId === order.id ? null : order.id)}
+                      className="inline-flex items-center space-x-1 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+                      disabled={updating}
+                    >
+                      <FiEdit2 className="w-4 h-4" />
+                      <span>{editingOrderId === order.id ? 'Batal' : 'Ubah Status'}</span>
+                    </button>
                   </td>
                 </tr>
               ))}

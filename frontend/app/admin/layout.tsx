@@ -29,13 +29,14 @@ export default function AdminLayout({
   const { user, isAdmin, logout } = useAuthStore()
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const isLoginPage = pathname === '/admin/login'
 
-  // Protect admin routes
+  // Protect admin routes (except login page)
   useEffect(() => {
-    if (!isAdmin) {
-      router.push('/admin/login')
+    if (!isAdmin && !isLoginPage) {
+      router.push('/login') // Redirect to main login page
     }
-  }, [isAdmin, router])
+  }, [isAdmin, isLoginPage, router])
 
   const handleLogout = () => {
     logout()
@@ -52,8 +53,14 @@ export default function AdminLayout({
     { name: 'Pengaturan', href: '/admin/settings', icon: FiSettings },
   ]
 
+  // If on login page, just render the children without layout
+  if (isLoginPage) {
+    return <>{children}</>
+  }
+
+  // If not admin and not on login page, show nothing (will redirect)
   if (!isAdmin) {
-    return null // or loading spinner
+    return null
   }
 
   return (
