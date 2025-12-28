@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { FaComments, FaTimes, FaPaperPlane, FaRobot, FaUser } from 'react-icons/fa'
 import axios from 'axios'
+import { useAuthStore } from '@/store/authStore'
 
 interface Message {
   id: number
@@ -16,13 +17,14 @@ interface ChatbotProps {
 }
 
 export default function Chatbot({ type = 'customer' }: ChatbotProps) {
+  const { user } = useAuthStore()
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 1,
       text: type === 'admin' 
         ? 'Halo Admin! 👋 Saya asisten AI NeuMart. Ada yang bisa saya bantu hari ini?'
-        : 'Halo! 👋 Selamat datang di NeuMart Sembako. Ada yang bisa saya bantu?',
+        : 'Halo! 👋 Selamat datang di NeuMart Sembako. Saya bisa bantu info produk, promo, gratis ongkir, dan banyak lagi!',
       sender: 'bot',
       timestamp: new Date()
     }
@@ -50,11 +52,11 @@ export default function Chatbot({ type = 'customer' }: ChatbotProps) {
         'Bantuan sistem'
       ]
     : [
-        'Rekomendasi produk',
-        'Cara berbelanja',
-        'Metode pembayaran',
-        'Promo hari ini',
-        'Lacak pesanan'
+        'Info gratis ongkir',
+        'Promo apa aja?',
+        'Cara belanja',
+        'Rekomendasi budget 50rb',
+        'Produk termurah'
       ]
 
   const handleSendMessage = async (text?: string) => {
@@ -72,19 +74,26 @@ export default function Chatbot({ type = 'customer' }: ChatbotProps) {
     setInputMessage('')
     setIsTyping(true)
 
-    // Simulate AI response
+    // Simulate AI response with context
     setTimeout(async () => {
       try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3003/api'
-        const response = await axios.post(`${apiUrl}/ai/chat`, {
-          message: messageText,
+        
+        // Prepare context for AI
+        const context = {
+          userId: user?.uid,
           type,
           history: messages.slice(-5) // Send last 5 messages for context
+        }
+        
+        const response = await axios.post(`${apiUrl}/ai/chat`, {
+          message: messageText,
+          context
         })
 
         const botMessage: Message = {
           id: Date.now() + 1,
-          text: response.data.reply || getDefaultResponse(messageText, type),
+          text: response.data.data?.aiResponse || getDefaultResponse(messageText, type),
           sender: 'bot',
           timestamp: new Date()
         }

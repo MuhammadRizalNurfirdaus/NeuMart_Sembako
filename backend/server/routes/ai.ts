@@ -203,7 +203,7 @@ router.post('/recipe', (req: Request, res: Response) => {
 // POST - Chatbot
 router.post('/chat', (req: Request, res: Response) => {
   try {
-    const { message } = req.body
+    const { message, context } = req.body
     
     if (!message) {
       return res.status(400).json({
@@ -212,7 +212,8 @@ router.post('/chat', (req: Request, res: Response) => {
       })
     }
     
-    const response = processChatMessage(message)
+    // Pass context to chatbot (userId, orderHistory, etc.)
+    const response = processChatMessage(message, context)
     
     res.json({
       success: true,

@@ -17,7 +17,33 @@
 
 ### ✨ Perbaikan & Fitur Baru yang Sudah Ditambahkan:
 
-#### 🗺️ **Maps Integration (100% GRATIS!)**
+#### � **Customer Account Management (BARU!)**
+- ✅ **Complete Profile System** - Dashboard profil customer yang lengkap
+- ✅ **Address Management** - Kelola alamat pengiriman dengan CRUD lengkap
+  - Tambah, edit, hapus alamat
+  - Set alamat default
+  - Dropdown Provinsi & Kota Indonesia (34 provinsi, 500+ kota)
+  - Auto-reset city saat ganti provinsi
+  - Form validation lengkap
+- ✅ **Payment Methods** - Kelola metode pembayaran
+  - Support: Bank Transfer, E-Wallet, Credit Card, COD
+  - Provider dropdown dinamis (BCA, Mandiri, GoPay, OVO, dll)
+  - Set metode pembayaran default
+  - Field otomatis disable untuk COD
+- ✅ **Cloud Database Integration** - Data tersimpan permanent di PostgreSQL Cloud
+  - Migration ke Aiven PostgreSQL
+  - Triggers untuk auto-manage default address/payment
+  - Soft delete untuk data integrity
+  - Indexes untuk performa optimal
+- ✅ **Order History** - Riwayat pesanan (UI ready, integrasi coming soon)
+- ✅ **Wishlist** - Simpan produk favorit (UI ready, integrasi coming soon)
+- ✅ **Reviews Management** - Kelola ulasan produk (UI ready, integrasi coming soon)
+- ✅ **Preferences** - Pengaturan notifikasi dan bahasa (UI ready, integrasi coming soon)
+- ✅ **Loading States** - UX yang baik dengan loading indicators
+- ✅ **Error Handling** - Alert messages untuk user feedback
+- 📖 Dokumentasi: `CUSTOMER_ACCOUNT_FEATURES.md`
+
+#### �🗺️ **Maps Integration (100% GRATIS!)**
 - ✅ **OpenStreetMap dengan Leaflet** - Ganti Google Maps dengan solusi gratis selamanya
 - ✅ **Interactive Maps** - Peta interaktif dengan pin yang bisa di-drag
 - ✅ **Location Search** - Cari alamat atau tempat dengan Nominatim
@@ -231,6 +257,7 @@ npm start                # Start production
 - `/products` - Katalog produk lengkap dengan filter
 - `/cart` - Keranjang + Smart Recommendation
 - `/checkout` - Halaman checkout & pembayaran
+- `/profile` - **[NEW!]** Profil & Account Management
 - `/ai-recipe` - Recipe Generator AI
 - `/chatbot` - AI Chatbot Assistant
 - `/admin` - Admin Dashboard
@@ -299,6 +326,30 @@ DELETE /api/admin/orders/:id    # Delete order
 GET  /api/admin/dashboard/stats # Get dashboard statistics
 ```
 
+### Customer Account Management (NEW!)
+```
+# Addresses
+GET  /api/customer/addresses/:userId        # Get all addresses
+POST /api/customer/addresses                # Create new address
+PUT  /api/customer/addresses/:id            # Update address
+DELETE /api/customer/addresses/:id          # Delete address (soft delete)
+PUT  /api/customer/addresses/:id/set-default # Set default address
+
+# Payment Methods
+GET  /api/customer/payment-methods/:userId  # Get payment methods
+POST /api/customer/payment-methods          # Create payment method
+DELETE /api/customer/payment-methods/:id    # Delete payment method
+
+# Wishlist (Coming Soon)
+GET  /api/customer/wishlist/:userId         # Get wishlist
+POST /api/customer/wishlist                 # Add to wishlist
+DELETE /api/customer/wishlist/:userId/:productId # Remove from wishlist
+
+# Preferences (Coming Soon)
+GET  /api/customer/preferences/:userId      # Get preferences
+PUT  /api/customer/preferences/:userId      # Update preferences
+```
+
 ### AI Features
 ```
 POST /api/ai/recipe             # Generate recipes from ingredients
@@ -356,32 +407,53 @@ GET  /api/db-test               # Test database connection
 - **reviews** - Product reviews with photos
 - **ai_logs** - AI interaction tracking
 - **related_products** - Product relationships
+- **customer_addresses** - **[NEW!]** Customer shipping addresses
+- **payment_methods** - **[NEW!]** Customer payment methods
+- **wishlist** - **[NEW!]** Customer favorite products
+- **customer_preferences** - **[NEW!]** Customer settings & preferences
+- **shipping_rates** - **[NEW!]** Shipping calculation data
+- **promotions** - **[NEW!]** Promo codes & offers
+- **promo_usage** - **[NEW!]** Promo usage tracking
 
 ---
 
-## � Environment Variables
+## 🔐 Environment Variables
 
 ### Backend (.env)
 ```env
 PORT=3003
 NODE_ENV=development
 
-# Database Configuration
+# Database Configuration (Cloud PostgreSQL)
 DATABASE_URL=postgresql://username:password@host:port/database
+# ⚠️ IMPORTANT: Never commit your actual credentials to Git!
+# ⚠️ Use environment-specific .env files and add to .gitignore
 
-# OpenAI API (Optional)
+# OpenAI API (Optional - for enhanced AI features)
 OPENAI_API_KEY=your_openai_api_key
+# Get your key at: https://platform.openai.com/api-keys
 ```
 
 ### Frontend (.env.local)
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:3003/api
 
-# Firebase Configuration (Optional)
+# Firebase Configuration (Optional - for authentication)
 NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_auth_domain
 NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+# ⚠️ IMPORTANT: Keep Firebase config secure!
+# ⚠️ Add .env.local to .gitignore
 ```
+
+### 🔒 Security Best Practices
+- ✅ Always use `.env` files for sensitive data
+- ✅ Add `.env`, `.env.local` to `.gitignore`
+- ✅ **Never commit API keys or database passwords to Git**
+- ✅ Use environment variables in production deployments
+- ✅ Rotate credentials regularly
+- ✅ Use different credentials for dev/staging/production environments
+- ✅ Review commit history before pushing to public repos
 
 ---
 
@@ -439,7 +511,10 @@ NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
 ## �📚 Dokumentasi Lengkap
 
 Lihat dokumentasi detail di root project:
-- `README.md` - Main documentation (file ini)- `MAPS_GUIDE.md` - **[BARU!]** Panduan Maps Integration (OpenStreetMap)- `ADMIN_CRUD_API.md` - Admin CRUD API documentation
+- `README.md` - Main documentation (file ini)
+- `CUSTOMER_ACCOUNT_FEATURES.md` - **[BARU!]** Customer account & profile system
+- `MAPS_GUIDE.md` - **[BARU!]** Panduan Maps Integration (OpenStreetMap)
+- `ADMIN_CRUD_API.md` - Admin CRUD API documentation
 - `DATABASE_SCHEMA.md` - Database schema & migrations
 - `GOOGLE_AUTH_SETUP.md` - Google OAuth setup guide
 - `ADMIN_PANEL_GUIDE.md` - Admin panel user guide
@@ -457,8 +532,9 @@ Dokumentasi frontend:
 
 ✅ **8 AI Features** - Smart recommendations, recipe generator, chatbot, sentiment analysis, auto-categorization, stock prediction, personalized offers, learning system  
 ✅ **Complete E-Commerce** - Products, cart, checkout, orders, reviews with photos  
+✅ **Customer Account System** - **[NEW!]** Profile management, addresses, payment methods  
 ✅ **Admin Dashboard** - Full CRUD for users, categories, products, orders  
-✅ **PostgreSQL Database** - Cloud-hosted on Aiven with SSL  
+✅ **PostgreSQL Cloud** - Cloud-hosted database with SSL encryption  
 ✅ **Image Upload** - Multer integration for products & reviews  
 ✅ **Authentication** - bcrypt password hashing + Firebase OAuth  
 ✅ **Real-time Stats** - Dashboard analytics with revenue, orders, customers  
@@ -467,12 +543,21 @@ Dokumentasi frontend:
 ✅ **Maps Integration** - OpenStreetMap with Leaflet (100% FREE!)  
 ✅ **Detailed AI Recipes** - 9-18 step recipes with precise measurements  
 ✅ **Unified Login** - Single login page with auto role detection  
+✅ **Indonesia Locations** - Complete province & city dropdown (34 provinces, 500+ cities)  
 
 ---
 
 ## 🆕 What's New in Latest Update
 
-### 🗺️ Maps & Location Features
+### � Customer Account Management (December 2025)
+- **Complete Profile System** - Dashboard profil lengkap dengan 7 sections
+- **Address Management** - CRUD alamat dengan dropdown provinsi/kota Indonesia
+- **Payment Methods** - Kelola metode pembayaran (Bank, E-Wallet, Credit Card, COD)
+- **Cloud Database** - Migrasi ke PostgreSQL cloud untuk data persistence
+- **Auto-Save** - Data tersimpan otomatis ke database
+- **Loading States** - UX yang smooth dengan loading indicators
+
+### �🗺️ Maps & Location Features
 - **FREE Forever** - No API keys, no credit cards, no sign up
 - **Interactive Maps** - Click, drag, search locations
 - **GPS Support** - Auto-detect current location
@@ -509,16 +594,17 @@ Dibuat dengan ❤️ menggunakan Next.js 14, Express.js, PostgreSQL, TypeScript,
 ---
 
 ### 📊 Project Stats
-- **Lines of Code:** 12,000+
-- **Components:** 20+
-- **API Endpoints:** 40+
-- **Database Tables:** 8
+- **Lines of Code:** 15,000+
+- **Components:** 25+
+- **API Endpoints:** 50+
+- **Database Tables:** 15 (8 core + 7 customer features)
 - **AI Features:** 8
 - **Admin CRUD Operations:** 20+
 - **Maps Integration:** OpenStreetMap (FREE!)
 - **Recipe Database:** 6+ detailed recipes (9-18 steps each)
+- **Indonesia Locations:** 34 provinces, 500+ cities
 
-**Version:** 2.5.0 | **Last Updated:** December 27, 2025
+**Version:** 3.0.0 | **Last Updated:** December 28, 2025
 
 ---
 
@@ -528,10 +614,16 @@ Dibuat dengan ❤️ menggunakan Next.js 14, Express.js, PostgreSQL, TypeScript,
 - [ ] Payment gateway integration (Midtrans/Xendit)
 - [ ] Email notifications for orders
 - [ ] Advanced filtering & sorting
-- [ ] Wishlist feature
+- [ ] Wishlist functionality (UI ready)
 - [ ] Product comparison
+- [ ] Order history with real data (UI ready)
+- [ ] Review management (UI ready)
 
 ### Completed ✅
+- [x] Customer account management system
+- [x] Address management with Indonesia locations
+- [x] Payment methods management
+- [x] Cloud database migration (PostgreSQL)
 - [x] Maps integration (OpenStreetMap with Leaflet)
 - [x] Detailed AI recipes (9-18 steps with precise measurements)
 - [x] Unified login system (auto role detection)
@@ -558,6 +650,14 @@ npm run dev
 ```
 Access at: http://localhost:3003
 
+### For Testing Customer Profile
+1. Login as customer (any email except admin123@gmail.com)
+2. Click "Profil Saya" in navigation menu
+3. Try adding addresses with province/city dropdown
+4. Try adding payment methods (COD, Bank Transfer, E-Wallet, Credit Card)
+5. Data will be saved to cloud database automatically!
+6. Refresh page - data persists!
+
 ### For Testing Maps Feature
 1. Go to checkout page (http://localhost:3000/checkout)
 2. Click "Pilih di Maps" button
@@ -574,6 +674,12 @@ Access at: http://localhost:3003
 ```
 Email: admin123@gmail.com
 Password: admin123
+```
+
+### Customer Test Account
+```
+Any email except admin123@gmail.com
+Password: your_password
 ```
 
 ---

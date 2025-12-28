@@ -9,6 +9,7 @@ import adminRoutes from './routes/admin'
 import adminCrudRoutes from './routes/admin-crud'
 import orderRoutes from './routes/orders'
 import reviewRoutes from './routes/reviews'
+import customerRoutes from './routes/customer'
 import { pool } from '../lib/db'
 import { initializeDatabase, seedProducts } from '../lib/initDb'
 
@@ -33,6 +34,7 @@ app.use('/api/admin', adminRoutes)
 app.use('/api/admin', adminCrudRoutes)  // Admin CRUD operations
 app.use('/api/orders', orderRoutes)
 app.use('/api/reviews', reviewRoutes)
+app.use('/api/customer', customerRoutes) // Customer account management routes
 
 // Health check
 app.get('/api/health', (req: Request, res: Response) => {

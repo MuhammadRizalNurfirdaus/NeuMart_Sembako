@@ -111,6 +111,16 @@ export default function Navbar() {
                       )}
                     </div>
                     
+                    {/* Profile Link */}
+                    <Link
+                      href="/profile"
+                      onClick={() => setIsUserMenuOpen(false)}
+                      className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center space-x-2"
+                    >
+                      <FiUser />
+                      <span>Profil Saya</span>
+                    </Link>
+                    
                     {/* My Orders Link */}
                     <Link
                       href="/my-orders"
